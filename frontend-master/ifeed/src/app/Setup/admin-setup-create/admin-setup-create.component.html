@@ -1,0 +1,155 @@
+<ngx-spinner></ngx-spinner>
+<div class="jumbotron">
+  <!-- Head of page -->
+  <div class="d-flex justify-content-between align-items-center" style="margin: 20px;">
+    <h2 *ngIf="getRouteId() === '0'">Create a new setup</h2>
+    <h2 *ngIf="getRouteId() !== '0'">Open existing setup</h2>
+  </div>
+
+  (You can hover over some inputfields for additional information)
+  <!-- separator -->
+  <hr class="my-1">
+
+  <ul class="list-group">
+
+    <h4 class="card-header bg-primary text-white">Metadata</h4>
+
+    <div class="form-group">
+
+    <form *ngIf="isDataRdy()" [formGroup]="getSetupForm()" (ngSubmit)="onSubmit()" class="form-group">
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Name:</label>
+        <input maxlength="30" placeholder="Setup name ..." formControlName="name" class="form-control form-control-lg" style="width: 50%;">
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Description:</label>
+        <textarea maxlength="2000" placeholder="Description ..." formControlName="description" class="form-control form-control-lg" style="width: 50%;"></textarea>
+      </div>
+
+      <h4 class="card-header bg-primary text-white">What can the user do during an iteration/session?</h4>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Should the rawdata be displayed to the user:</label>
+        <input type="checkbox" formControlName="rawData" class="d-flex justify-content-start align-items-center">
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Should the user be able to rewind their last decision:</label>
+        <input type="checkbox" formControlName="rewindable" class="d-flex justify-content-start align-items-center">
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Maximum Iterations per session:</label>
+        <input type="number" placeholder="Iterations ..." matTooltip="any negativ number means there is no limit. else must be bigger then 0" formControlName="iterations" class="form-control form-control-lg" style="width: 50%;">
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Maximum answertime per iteration [sec]:</label>
+        <input type="number" placeholder="MaxAnswerTime ..." matTooltip="any negativ number means there is no limit. numbers between 0 and 4 (inclusiv) are not valid" formControlName="maxAnswerTime" class="form-control form-control-lg" style="width: 50%;">
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Which histroymode should be used:</label>
+        <div class="form-group text-center">
+          <mat-form-field>
+            <mat-select formControlName="historyMode" placeholder="Select HistoryMode">
+              <mat-option *ngFor="let mode of getHistoryModes()" [value]="mode['value']">{{mode['name']}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <h4 class="card-header bg-primary text-white">Subspaces configuration:</h4>
+      
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Subspaces [hover for syntax]:</label>
+        <textarea maxlength="2000" placeholder="Subspaces ..." matTooltip="(Syntax: 'x,y;b,c' for subspaces (x,y) and (b,c), with x,y,b,c being the dimensions/columns of the datasets (starting with 1) )" formControlName="subspaces" class="form-control form-control-lg" style="width: 50%;"></textarea>
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">How many gridpoints do you want per axis [integer]</label>
+        <input type="number" placeholder="Subspace grids ..." matTooltip="there can occur problems if you select to much points" formControlName="subspacesGrids" class="form-control form-control-lg" style="width: 50%;">
+      </div>
+
+      <h4 class="card-header bg-primary text-white">Technical information (for the OcalAPI)</h4>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+      <label class="col-form-label col-form-label-lg">Which dataset should be used:</label>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select formControlName="dataset" placeholder="Select Dataset">
+            <mat-option *ngFor="let datasets of getDatasetList()" [value]="datasets.id">{{datasets['name']}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+      <label class="col-form-label col-form-label-lg">Which feedbackmode should be used:</label>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select formControlName="feedbackMode" placeholder="Select FeedbackMode">
+            <mat-option *ngFor="let mode of getFeedbackModes()"  [value]="mode['value']">{{mode['name']}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+      <label class="col-form-label col-form-label-lg">Which querystartegy should be used:</label>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select formControlName="queryStrategy" matTooltip="If you selected feedbackmode 'user' choose any querystrategy" placeholder="Select QueryStrategy">
+            <mat-option *ngFor="let query of getQueryStrategyList()" [value]="query.id">{{query['name']}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+      <label class="col-form-label col-form-label-lg">Which classifier should be used:</label>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select formControlName="classifier" placeholder="Select Classifier">
+            <mat-option *ngFor="let classifier of getClassifierList()" [value]="classifier.id">{{classifier['name']}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Parameters:</label>
+        <div>
+          <label class="col-form-label col-form-label-lg">C [0,1]:</label>
+          <input type="number" formControlName="C" placeholder="Parameter value" class="form-control form-control-lg">
+        </div>
+        <div>
+          <label class="col-form-label col-form-label-lg">gamma [integer]:</label>
+          <input type="number" formControlName="gamma" placeholder="Parameter value" class="form-control form-control-lg">
+        </div>
+      </div>
+
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <label class="col-form-label col-form-label-lg">Do you want to instantly complete the creation of this setup:</label>
+        <input type="checkbox" formControlName="finishedCreation" class="d-flex justify-content-start align-items-center">
+      </div>
+
+      <div class="btn-group" id="second">
+        <input type="submit"  class="btn btn-primary" value="Finish" stlye="width: 25%;">
+      </div>
+
+      
+    </form>
+
+</div>
+<div *ngIf="getMessage()" class="alert alert-danger text-center">
+    <strong>{{getMessage()}}</strong>
+</div>
+
+<!-- footer -->
+<div class="text-center pb-1">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>

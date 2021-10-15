@@ -1,0 +1,125 @@
+<ngx-spinner></ngx-spinner>
+
+<div class=container>
+
+  <!--
+
+    Row 1
+
+  -->
+  <div class="row">
+    <!--
+
+      First column in row 1
+      CONTENT:
+      Heatmap & button to click
+
+    -->
+    <div class="col-sm">
+      <div *ngIf="isDataRdy()">
+        <h4>Session: {{getSession().name}}</h4>
+        <h5>total time: {{getMinutes()}}min {{getSeconds()}}sec</h5>
+        <h5 *ngIf="getSetup().maxAnswerTime != -1">time left: {{getSetup().maxAnswerTime - getIterationTime()}} sec</h5>
+      </div>
+      <!-- heatmap -->
+      <div id="myDiv"></div>
+      <!--
+
+          CONTENT:
+          progressbar & controllbutton.
+
+        -->
+      <div class="row" *ngIf="isDataRdy()">
+        <!--btn-group starts-->
+        <div class="row">
+          <mat-form-field class="col-sm-6" *ngIf="isDataRdy()">
+            <mat-select [(value)]="displayedSubspace" (selectionChange)="showHeatmap(getSubspaceStrings().indexOf($event.value))" placeholder="Subspace">
+              <mat-option *ngFor="let t of getSubspaceStrings()" value="{{t}}">{{t}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="col-sm-5"></div>
+          <div class="col-sm-1">
+            <div class="btn-group" *ngIf="isSelected() && isDataRdy()">
+              <button class="btn-primary btn-sm btn" matTooltip="Label the selected point as outlier" [disabled]="!isSelected()" (click)="selectLabel(2)">outlier</button>
+              <button class="btn-primary btn-sm btn" matTooltip="Label the selected point as inlier" [disabled]="!isSelected()" (click)="selectLabel(1)">inlier</button>
+            </div>
+          </div>
+          <!--btn-group end-->
+        </div>
+      </div>
+      <!--row 3 end-->
+      <!--row 4 starts-->
+      <div class="row" *ngIf="isDataRdy()">
+        <h6 class="col-sm-2">Iteration: {{getSession().iteration}} <span *ngIf="getSetup().iterations != -1">/{{getSetup().iterations}}</span></h6>
+        <app-progressbar class="col-sm-6" [heatmaps]="getSession().heatmaps" [matches]="getSession().userlabelMatchesAPI" [mode]="getSetup().historyMode"></app-progressbar>
+        <div class="col-sm-4 btn-group">
+          <button class="btn-primary btn-sm btn" matTooltip="Redo the last iteration" *ngIf="!didRewind() && getSetup().rewindable" (click)="rewind()">rewind</button>
+          <button class="btn-primary btn-sm btn" matTooltip="Go to next iteration to label another point" *ngIf="getSession().iteration < getSetup().iterations || getSetup().iterations === -1" [disabled]="!isLabeled() || getSession().iteration >= getSetup().iterations && getSetup().iterations !== -1"
+            (click)="continue(false)">
+            continue
+          </button>
+          <button class="btn-primary btn-sm btn" matTooltip="Finish the session" *ngIf="getSetup().iterations == -1 || getSession().iteration == getSetup().iterations" [disabled]="!isLabeled()" (click)="continue(true)">
+            finish
+          </button>
+        </div>
+      </div>
+      <!--row 4 end-->
+    </div>
+    <!--
+
+      Second column in row 1
+      CONTENT:
+      Information about selected point
+
+    -->
+    <div class="col-sm card center">
+      <div class="row">
+        <!--
+
+                      Information about selected point
+
+              -->
+        <div *ngIf="isSelected() && isDataRdy()" class="col-sm">
+          <!-- Punktinfo -->
+          <div class="container h-100">
+            <div class="d-flex align-items-center  h-100">
+              <div class="mx-auto">
+                <h4>selected point</h4>
+                <div *ngIf="isLabeled()">
+                  <h5>you selected: {{enumService.userLabeltoLabel(getSelectedLabels()[0])}}</h5>
+                </div>
+                <table *ngIf="getSetup().rawData">
+                  <cdk-virtual-scroll-viewport class="list-container lg" autosize>
+                    <div class="table">
+                      <tr>
+                        <th>Dimension</th>
+                        <th>Value</th>
+                      </tr>
+                      <tr *cdkVirtualFor="let title of getDataset().dataset.titles; let i = index">
+                        <td>{{title}}</td>
+                        <td>{{getDataset().dataset.values[getSelectedPoints()[0]][i]}}</td>
+                      </tr>
+                    </div>
+                  </cdk-virtual-scroll-viewport>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--
+
+        Drawn Rawdata
+
+      -->
+      <div>
+        <div [hidden]="!dataRdyTypename(getDataset(), 'timeline')" id="RawData"></div>
+        <div class="h-100">
+          <div class="d-flex align-items-center  h-100">
+            <canvas class="mx-auto" [matTooltip]="isDataRdy() && getSetup().rawData ? 'This is the original image, where the data for the selected point is from' : null" [hidden]="!dataRdyTypename(getDataset(), 'image')" id="Image"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

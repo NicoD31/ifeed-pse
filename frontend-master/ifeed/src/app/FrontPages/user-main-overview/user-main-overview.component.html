@@ -1,0 +1,43 @@
+<!-- TODO: UserGuard -->
+<div class="jumbotron">
+  <!-- head of page -->
+  <h2 style="margin:20px;">User Overview</h2>
+
+  <!-- separator -->
+  <hr class="my-1">
+
+  <!-- session list -->
+  <cdk-virtual-scroll-viewport *ngIf="isDataRdy()" itemSize="50" class="listcontainer" style="height: 368px; width: 98%; margin: 20px;">
+    <!-- list header -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+      <h4>Sessions</h4>
+      <input #myInput placeholder="Search for name..." (input)="filterSessionList(myInput.value)" maxlength="40" class="form-control" style="width: 11%;">
+    </div>
+
+    <!-- list content -->
+    <ul class="list-group">
+      <li *cdkVirtualFor="let session of getFilteredList()" class="list-group-item d-flex justify-content-between align-items-center">
+        <h5 class="clickable" style="width: 300px;"><span (click)="onNameClick(session.finished, session.id)">{{ session['name'] }}</span></h5>
+
+        <div class="btn-group">
+          <button *ngIf="!session.finished" (click)="getRouter().navigate(['/iterate/' + session.id])" class="btn btn-outline-primary">enter session</button>
+          <button (click)="getRouter().navigate(['/session/detail/' + session.id])" class="btn btn-outline-primary">statistics</button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+          <div style="width: 300px">
+            <ngb-progressbar type="success" [value]="calcService.calcPercentFinished(getSetup(session.setup), session)" [striped]="true" [animated]="true" height="20px"><i>{{ calcService.calcPercentFinished(getSetup(session.setup), session) }}%</i></ngb-progressbar>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </cdk-virtual-scroll-viewport>
+</div>
+
+<ngx-spinner></ngx-spinner>
+
+<!-- footer -->
+<div class="text-center pb-1">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>

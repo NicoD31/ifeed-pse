@@ -1,0 +1,38 @@
+<div *ngIf="isDataRdy()" class="jumbotron">
+  <div class="container" style="width: 370px;">
+    <h2 class="text-center" id="notClickable">Welcome to iFeeD</h2>
+    <form [formGroup]="nameForm" (ngSubmit)="onSubmit()">
+      <!-- form field for the login name -->
+      <div class="form-group">
+        <label class="col-form-label col-form-label-lg">Name</label>
+        <input maxlength="40" class="form-control form-control-lg" type="text" placeholder="Login name" formControlName="loginName">
+      </div>
+
+      <!-- form field for the password, if Admin -->
+      <div *ngIf="isAdmin" class="form-group">
+        <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
+          <label class="col-form-label col-form-label-lg">Password</label>
+          <input maxlength="40" class="form-control form-control-lg" type="password" placeholder="password" formControlName="password" autofocus>
+        </form>
+      </div>
+
+      <!-- submit button -->
+      <div class="form-group text-center">
+        <input class="btn btn-primary" type="submit" value="Login">
+      </div>
+
+      <!-- error message for invalid input -->
+      <div *ngIf="nameNotValid || passwordNotValid" class="alert alert-danger text-center">
+        <strong>{{errorMessage}}</strong>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- footer -->
+<div class="text-center">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>
+
+<router-outlet></router-outlet>

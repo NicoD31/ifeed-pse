@@ -1,0 +1,9 @@
+<div [hidden]="!isVisible()" id="plotJson"></div>
+<div>
+  <table id="progressTable">
+    <tr>
+      <td *ngFor="let map of getHeatmaps(); let i=index" (mouseenter)="showHeatmap(i)" (mouseleave)="setVisible(false)" [ngStyle]="{'background-color': setColors(i)}"></td>
+    </tr>
+
+  </table>
+</div>

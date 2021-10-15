@@ -1,0 +1,69 @@
+<div class="jumbotron" *ngIf="isDataRdy() && setupLoaded">
+  <!-- head of page -->
+  <div class="d-flex justify-content-between align-items-center" style="margin: 20px;" id="notClickable">
+    <h2>{{ setup['name'] }}</h2>
+
+    <div *ngIf="showAverageTime">
+      <h4>{{averageTime}}</h4>
+    </div>
+
+    <div class="btn-group">
+      <!-- options for this Setup -->
+      <button (click)="cloneSetup()" class="btn btn-primary">clone</button>
+      <button mat-button (click)="deleteSetup()" class="btn btn-primary">delete</button>
+      <button (click)="downloadSetup()" class="btn btn-primary">download</button>
+      <button (click)="openSetupConfig()" class="btn btn-primary">configuration</button>
+    </div>
+  </div>
+
+  <!-- separator -->
+  <hr class="my-1">
+ 
+  <!-- list of all Sessions to this Setup with search function -->
+  <cdk-virtual-scroll-viewport itemSize="50" class="listcontainer" style="height: 368px; width: 98%; margin: 20px;" id="notClickable">
+    <!-- list header -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+      <h4>Sessions</h4>
+      <input #search maxlength="40" placeholder="Search for Sessions ..." (input)="filterSessionList(search.value)" class="form-control" style="width: 13%;">
+    </div>
+
+    <!-- list content -->
+    <ul class="list-group">
+      <li *cdkVirtualFor="let session of filteredSessions" class="list-group-item d-flex justify-content-between align-items-center">
+        <!-- name -->
+        <span (click)="openSessionDetail(session['id'])" id="clickable">
+          <h5 style="width: 300px;">{{ session['name'] }}</h5>
+        </span>
+      
+        <!-- buttons -->
+        <div class="btn-group">
+          <button (click)="openSessionDetail(session['id'])" class="btn btn-outline-primary">open</button>
+          <button mat-button (click)="deleteSession(session)" class="btn btn-outline-primary">delete</button>
+          <button (click)="downloadSession(session)" class="btn btn-outline-primary">download as JSON</button>
+          <button (click)="downloadSessionLabels(session)" class="btn btn-outline-primary">download labels</button>
+        </div>
+          
+        <!-- progress info -->
+        <div class="d-flex justify-content-between align-items-center" style="width: 290px;">
+          <small>{{ this.createSessionStatusInfo(session) }}</small>
+          <div style="width: 200px;">
+            <ngb-progressbar type="success" [value]="this.createPercentFinishedInfo(session)" [striped]="true" [animated]="true" height="20px"><i>{{ this.createPercentFinishedInfo(session) }}%</i></ngb-progressbar>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </cdk-virtual-scroll-viewport>    
+
+  <!-- message -->
+  <div *ngIf="message" class="container alert alert-secondary text-center" style="width: 370px;">
+    <strong>{{message}}</strong>
+  </div>
+</div>
+
+<ngx-spinner></ngx-spinner>
+
+<!-- footer -->
+<div class="text-center pb-1" *ngIf="isDataRdy() && setupLoaded">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>

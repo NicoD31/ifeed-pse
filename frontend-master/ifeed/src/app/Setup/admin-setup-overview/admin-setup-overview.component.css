@@ -1,0 +1,12 @@
+/* style for matrix */
+td, th {
+    height  : 57px;
+    width   : 179px;
+}
+  
+table {
+    border-radius     : 6px;
+    -moz-border-radius: 6px;
+    border-collapse   : separate;
+    text-align        : center;
+}

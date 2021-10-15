@@ -1,0 +1,94 @@
+<ngx-spinner></ngx-spinner>
+<div class="jumbotron">
+  <!-- head of page -->
+
+  <div class="d-flex justify-content-between align-items-center" style="margin: 20px;">
+    <h2>User-Management</h2>
+
+    <div class="btn-group" id="second">
+      <button (click)="createUser()" class="btn btn-primary">create new user</button>
+    </div>
+  </div>
+
+  <!-- separator -->
+  <hr class="my-1">
+
+  <div id="wrapper">
+
+      <span id="notClickable">
+      <cdk-virtual-scroll-viewport *ngIf="isDataRdy()" itemSize="50" class="listcontainer" id="first" style="height: 368px; width: 45%; margin: 20px;">
+        <!-- list header -->
+        <div class="card-header bg-primary text-white d-flex justify-content-between" id="notClickable">
+          <h4>User</h4>
+          <div style="width: 25%;">
+            <input #myInput maxlength="40" placeholder="Search for user ..." (input)="filterList(USERLIST, myInput.value)" class="form-control" style="width: 100%;">
+          </div>
+        </div>
+
+        <!-- list content -->
+        <ul class="list-group" id="notClickable">
+          <li *cdkVirtualFor="let user of getDisplayUserList()" class="list-group-item d-flex justify-content-between align-items-center">
+            {{user['name']}}
+
+            <label *ngIf="user['isDeactivated']">DEACTIVATED</label>
+
+            <div class="btn-group">
+              <button *ngIf="!user['isDeactivated']" (click)="deactivateUser(USERLIST, user['id'])" class="btn btn-outline-primary">deactivate
+                user</button>
+              <button *ngIf="user['isDeactivated']" (click)="activateUser(USERLIST, user['id'])" class="btn btn-outline-primary">activate
+                user</button>
+              <button (click)="deleteUser(USERLIST, user['id'])" class="btn btn-outline-primary">delete user</button>
+            </div>
+          </li>
+        </ul>
+      </cdk-virtual-scroll-viewport>
+      </span>
+      
+      <span id="notClickable">
+      <cdk-virtual-scroll-viewport *ngIf="isDataRdy()" itemSize="50"  class="listcontainer" id="second" style="height: 368px; width: 45%; margin: 20px;">
+        <!-- list header -->
+        <div class="card-header bg-primary text-white d-flex justify-content-between" id="notClickable">
+          <h4>Admins</h4>
+          <div style="width: 25%;">
+            <input #myInput maxlength="40" placeholder="Search for admin ..." (input)="filterList(ADMINLIST, myInput.value)" class="form-control" style="width: 100%;">
+          </div>
+        </div>
+
+        <!-- list content -->
+        <ul class="list-group" id="notClickable">
+          <li *cdkVirtualFor="let admins of getDisplayAdminList()" id="notClickable" class="list-group-item d-flex justify-content-between align-items-center">
+            {{admins['name']}}
+
+            <label *ngIf="admins['isDeactivated']">DEACTIVATED</label>
+
+            <div class="btn-group">
+              <button *ngIf="!admins['isDeactivated']" (click)="deactivateUser(ADMINLIST, admins['id'])" class="btn btn-outline-primary">deactivate
+                admin</button>
+              <button *ngIf="admins['isDeactivated']" (click)="activateUser(ADMINLIST, admins['id'])" class="btn btn-outline-primary">activate
+                admin</button>
+              <button (click)="deleteUser(ADMINLIST, admins['id'])" class="btn btn-outline-primary">delete admin</button>
+            </div>
+          </li>
+        </ul>
+      </cdk-virtual-scroll-viewport>
+    </span>
+
+  </div>
+
+  <ngx-spinner></ngx-spinner>
+
+  <div class="row justify-content-center">
+    <div *ngIf="getMessage()" class="alert alert-danger text-center" style="width: 430px;">
+      <strong>{{getMessage()}}</strong>
+    </div>
+    <div *ngIf="getSuccessMessage()" class="alert alert-success text-center" style="width: 430px;">
+      <strong>{{getSuccessMessage()}}</strong>
+    </div>
+  </div>
+</div>
+
+<!-- footer -->
+<div class="text-center pb-1">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>

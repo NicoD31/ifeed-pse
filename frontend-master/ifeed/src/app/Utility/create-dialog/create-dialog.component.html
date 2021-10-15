@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h2 mat-dialog-title class="modal-title">Create Sessions</h2>
+</div>
+
+<div class="modal-body">
+  <mat-dialog-content>
+    <p>Session creation is done in the Setup overview</p>
+    <p> To create Sessions, please select "create session(s)" to the respective Setup in the list provided below</p>
+  </mat-dialog-content>
+</div>
+
+<div class="modal-footer d-flex justify-content-end align-items-center">
+  <mat-dialog-actions>
+    <button mat-button (click)="cancel()" class="btn btn-primary">Cancel</button>
+  </mat-dialog-actions>      
+  <mat-dialog-actions>
+    <button mat-button (click)="continue()" class="btn btn-secondary">Ok, continue to Setup overview</button>
+  </mat-dialog-actions>
+</div>

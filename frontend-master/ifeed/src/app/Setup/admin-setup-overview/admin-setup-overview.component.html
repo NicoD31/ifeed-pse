@@ -1,0 +1,189 @@
+<div *ngIf="isDataRdy()" class="jumbotron">
+  <!-- head of page -->
+  <div class="d-flex justify-content-between align-items-center" style="margin:20px;" id="notClickable">
+    <h2>Setup Overview</h2>
+
+    <button (click)="openCreateSetup()" class="btn btn-primary">create new setup</button>
+  </div>
+
+  <!-- separator -->
+  <hr class="my-1">
+  
+  <!-- list -->
+  <cdk-virtual-scroll-viewport itemSize="50" class="listcontainer" style="height: 369px; width: 98%; margin: 20px;" id="notClickable">
+    <!-- list header -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+      <h4>Setups</h4>
+      <input #search maxlength="40" placeholder="Search for Setups ..." (input)=filterSetupList(search.value) class="form-control" style="width: 11%;">
+    </div>
+  
+    <!-- list content -->
+    <ul class="list-group">
+      <li *cdkVirtualFor="let setup of filteredSetups" class="list-group-item d-flex justify-content-between align-items-center">
+        <span *ngIf="!setup['finishedCreation']"(click)="editSetup(setup['id'])">
+          <h5 style="width: 300px;" id="clickable">{{ setup['name'] }}</h5>
+        </span>
+       
+        <span *ngIf="setup['finishedCreation']" (click)="openSetup(setup['id'])">
+          <h5 style="width: 300px;" id="clickable">{{ setup['name'] }}</h5>
+        </span>
+        
+        <div *ngIf="!setup['finishedCreation']" class="btn-group">
+          <button (click)="editSetup(setup['id'])" class="btn btn-outline-primary">edit</button>
+          <button (click)="finishCreation(setup)" class="btn btn-outline-primary">finish creation</button>
+          <button mat-button (click)="deleteSetup(setup)" class="btn btn-outline-primary">delete</button>
+        </div>
+
+        <div *ngIf="setup['finishedCreation']" class="btn-group">
+          <button (click)="openSetup(setup['id'])" class="btn btn-outline-primary">open</button>
+          <button (click)="selectSetupForStatistics(setup)" class="btn btn-outline-primary">show statistics</button>
+          <button (click)="selectSetupForSessionCreation(setup)" class="btn btn-outline-primary">create session(s)</button>
+          <button mat-button (click)="deleteSetup(setup)" class="btn btn-outline-primary">delete</button>
+        </div>
+
+        <small class="d-flex justify-content-end" style="width: 300px;">{{ this.createSetupTimeInfo(setup) }}</small>
+      </li>
+    </ul>
+  </cdk-virtual-scroll-viewport>
+
+  <!-- message -->
+  <div *ngIf="displayDeletionMessage" class="container alert alert-secondary text-center" style="width: 370px;">
+    <strong>{{deletionMessage}}</strong>
+  </div>
+
+  <!-- statistics or create Sessions -->
+  <div *ngIf="isSessionCreationSelected || isStatSelected" class="listcontainer" style="height: 570px; width: 98%; margin: 20px;" id="notClickable">
+    <!-- box header -->
+    <div *ngIf="isSessionCreationSelected" class="card-header bg-primary text-white">
+      <h4>Create Sessions for {{ selectedSetup['name'] }}</h4>
+    </div>
+    <div *ngIf="isStatSelected" class="card-header bg-primary text-white">
+      <h4>Statistics of {{ selectedSetup['name'] }}</h4>      
+    </div>
+  
+    <!-- box content -->
+    <div class="list-group-item" style="height: 508px;">
+      <!-- create Session menu -->
+      <div *ngIf="isSessionCreationSelected" class="container align-items-center" style="width: 330px; margin-top: 40px;">
+        <div class="form-group text-center">
+          <h5 class="col-form-label col-form-label-lg">Select User for Session creation</h5>
+        </div>
+
+        <div class="form-group text-center">
+          <mat-form-field>
+            <mat-select placeholder="select multiple user" [formControl]="selectedUsers" multiple>
+              <mat-option *ngFor="let user of userList" [value]="user">{{user['name']}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group text-center">
+          <button (click)="submitSelection()" class="btn btn-primary">create session(s)</button>
+        </div>
+
+        <div *ngIf="displayCreationMessage" class="container alert alert-secondary text-center">
+          <strong>{{ creationMessage }}</strong>
+        </div>
+      </div>
+
+      <!-- statistics menu -->
+      <div *ngIf="isStatSelected && sessionsLoaded">
+        <!-- matrix -->
+        <!-- row -->
+        <div style="width: 1000px; height: 70px; margin-left: 210px;">
+          <mat-form-field style="float: left">
+            <mat-select [(value)]="selectedRow[0]">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let session of sessionList" value="{{ session['id'] }}">{{ session['name'] }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+      
+          <mat-form-field style="float: left">
+            <mat-select [(value)]="selectedRow[1]">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let session of sessionList" value="{{ session['id'] }}">{{ session['name'] }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+      
+          <mat-form-field style="float: left">
+            <mat-select [(value)]="selectedRow[2]">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let session of sessionList" value="{{ session['id'] }}">{{ session['name'] }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+      
+          <mat-form-field style="float: left">
+            <mat-select [(value)]="selectedRow[3]">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let session of sessionList" value="{{ session['id'] }}">{{ session['name'] }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- column -->
+        <div id="wrapper">
+          <div style="width: 210px; height: 300px;" id="first">
+            <mat-form-field style="float: left"> 
+              <mat-select [(value)]="selectedCol[0]">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let session of sessionList" value="{{ session['id'] }}">{{ session['name'] }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        
+            <mat-form-field style="float: left">
+              <mat-select [(value)]="selectedCol[1]">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let session of sessionList" value="{{ session['id'] }}">{{ session['name'] }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        
+            <mat-form-field style="float: left">
+              <mat-select [(value)]="selectedCol[2]">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let session of sessionList" value="{{ session['id'] }}">{{ session['name'] }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        
+            <mat-form-field style="float: left">
+              <mat-select [(value)]="selectedCol[3]">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let session of sessionList" value="{{ session['id'] }}">{{ session['name'] }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- table of matrix -->
+          <div id="first">
+            <table class="table table-bordered">
+              <tbody>
+                 <tr *ngFor="let col of [0, 1, 2, 3]">
+                  <td *ngFor="let row of [0, 1, 2, 3]" bgColor="{{ colorMatrix[row][col] }}">
+                    {{ cappaMatrix[row][col] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- message -->
+        <div class="container alert alert-light text-center" style="width: 480px;">
+          <small>{{ statisticsMessage }}</small> 
+        </div>
+
+        <!-- submit button -->
+        <div class="form-group text-center">
+          <button (click)="updateMatrices()" class="btn btn-primary">compute stats</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner></ngx-spinner>
+  
+<!-- footer -->
+<div *ngIf="isDataRdy()" class="text-center pb-1">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>

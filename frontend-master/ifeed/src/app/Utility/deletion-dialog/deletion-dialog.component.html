@@ -1,0 +1,43 @@
+<div *ngIf="data.isSetup">
+  <!-- setup -->
+  <div class="modal-header">
+    <h2 mat-dialog-title class="modal-title">Do you really want to delete {{ data.setup['name'] }}? </h2>
+  </div>
+  
+
+  <div class="modal-body">
+    <mat-dialog-content>
+      <p>All existing Sessions to this Setup will also be deleted!</p>
+    </mat-dialog-content>
+  </div>
+</div>
+
+<div *ngIf="data.isSession">
+  <!-- session -->
+  <div class="modal-header">
+    <h2 mat-dialog-title>Do you really want to delete {{ data.session['name'] }}? </h2>
+  </div>
+</div>
+
+<div *ngIf="data.isPerson">
+  <!-- person -->
+  <div class="modal-header">
+    <h2 mat-dialog-title>Do you really want to delete the Person {{ data.person['name'] }}? </h2>
+  </div>
+</div>
+
+<div *ngIf="data.isDataset">
+  <!-- dataset -->
+  <div class="modal-header">
+    <h2 mat-dialog-title>Do you really want to delete the Dataset {{ data.dataset['name'] }}? </h2>
+  </div>
+</div>
+
+<div class="modal-footer d-flex justify-content-end align-items-center">
+  <mat-dialog-actions>
+    <button mat-button (click)="cancel()" class="btn btn-primary">Cancel</button>
+  </mat-dialog-actions>      
+  <mat-dialog-actions>
+    <button mat-button (click)="delete()" class="btn btn-secondary">Yes</button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,16 @@
+{
+	"results": [
+        {
+            "id": 1,
+            "name": "admin1",
+			"isDeactivated": true,
+			"password": "12345678"
+        },
+        {
+            "id": 2,
+            "name": "admin2",
+			"isDeactivated": false,
+			"password": "12345678"
+        }
+    ]
+}

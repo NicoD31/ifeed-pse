@@ -1,0 +1,14 @@
+{
+	"results": [
+        {
+            "id": 3,
+            "name": "user1",
+			"isDeactivated": true
+        },
+        {
+            "id": 4,
+            "name": "user2",
+			"isDeactivated": false
+        }
+    ]
+}

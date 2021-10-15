@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <h2 mat-dialog-title class="modal-title">Create Sessions</h2>
+  </div>
+  
+  <div class="modal-body">
+    <mat-dialog-content>
+      <p>Dataset: {{data.name}}</p>
+      <p>Description: {{data.description}}</p>
+      <p>Groundtruth: {{data.groundtruth}}</p>
+    </mat-dialog-content>
+  </div>
+  
+  <div class="modal-footer d-flex justify-content-end align-items-center">    
+    <mat-dialog-actions>
+      <button mat-button (click)="continue()" class="btn btn-secondary">Ok</button>
+    </mat-dialog-actions>
+  </div>

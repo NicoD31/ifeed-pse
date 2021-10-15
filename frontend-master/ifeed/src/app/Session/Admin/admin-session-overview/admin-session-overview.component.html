@@ -1,0 +1,59 @@
+<div class="jumbotron">
+  <!-- head of page -->
+  <div class="d-flex justify-content-between align-items-center" style="margin: 20px;">
+    <h2 style="margin:20px;">Session Overview</h2>
+
+    <div class="btn-group">
+      <button mat-button (click)="openCreateSessionDialog()" class="btn btn-primary">create Sessions</button>
+    </div>
+  </div>
+
+  <!-- separator -->
+  <hr class="my-1">
+
+  <!-- list -->
+  <cdk-virtual-scroll-viewport itemSize="50" class="listcontainer" style="height: 369px; width: 98%; margin: 20px;" id="notClickable"
+    *ngIf="isDataRdy()">
+    <!-- list header -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+      <h4>Sessions</h4>
+      <input #filter maxlength="40" placeholder="Search for name ..." (input)="filterSessionList(filter.value)" class="form-control"
+        style="width: 11%;">
+    </div>
+
+    <!-- list content -->
+    <ul class="list-group">
+      <li *cdkVirtualFor="let session of getFilteredSessions()"
+        class="list-group-item d-flex justify-content-between align-items-center">
+        <span id="clickable" (click)="openSession(session['id'])">
+          <h5 style="width: 300px;">{{ session['name'] }}</h5>
+        </span>
+
+        <div class="btn-group">
+          <button (click)="openSession(session['id'])" class="btn btn-outline-primary">open</button>
+          <button (click)="deleteSession(session)" class="btn btn-outline-primary">delete</button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center" style="width: 300px;">
+          <small>{{this.getStatus(session)}}</small>
+          <div style="width: 210px;">
+            <ngb-progressbar type="success" [value]="this.createPercentFinishedInfo(session)" [striped]="true"
+              [animated]="true" height="20px"><i>{{ this.createPercentFinishedInfo(session) }}%</i></ngb-progressbar>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </cdk-virtual-scroll-viewport>
+
+  <div *ngIf="getMessage()" class="container alert alert-secondary text-center" style="width: 370px;">
+    <strong>{{getMessage()}}</strong>
+  </div>
+</div>
+
+<ngx-spinner></ngx-spinner>
+
+<!-- footer -->
+<div class="text-center pb-1" *ngIf="isDataRdy()">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>

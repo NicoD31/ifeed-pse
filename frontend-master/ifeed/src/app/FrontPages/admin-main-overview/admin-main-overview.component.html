@@ -1,0 +1,74 @@
+<div *ngIf="isDataRdy()" class="jumbotron">
+  <div id="wrapper">
+    <!-- list of the latest 5 Setups -->
+    <div (click)="openSetups()" class="listcontainer" id="first">
+      <ul class="list-group">
+        <!-- list header -->
+        <h4 class="card-header bg-primary text-white">Setups</h4>
+        <!-- list content -->
+        <li *ngFor="let setup of displayedSetups" class="list-group-item d-flex justify-content-between align-items-center">
+          <h6>{{ setup['name'] }}</h6>
+          <small>{{ this.createSetupTimeInfo(setup) }}</small>
+        </li>
+      </ul>
+    </div>
+
+    <!-- list of the latest 5 Sessions -->
+    <div (click)="openSessions()" class="listcontainer" id="second">
+      <ul class="list-group">
+        <!-- list header -->
+        <h4 class="card-header bg-primary text-white">Sessions</h4>
+        <!-- lsit content -->
+        <li *ngFor="let session of sessionList"
+          class="list-group-item d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-start">
+            <h6>{{ session['name'] }}</h6>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center" style="width: 230px;">
+            <small>{{ this.createSessionStatusInfo(session) }}</small>
+            <div style="width: 150px;">
+              <ngb-progressbar type="success" [value]="this.createPercentFinishedInfo(session)" [striped]="true"
+                [animated]="true" height="20px"><i>{{ this.createPercentFinishedInfo(session) }}%</i></ngb-progressbar>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="wrapper">
+    <!-- list of the latest 5 User -->
+    <div (click)="openUser()" class="listcontainer" id="first">
+      <ul class="list-group">
+        <!-- list header -->
+        <h4 class="card-header bg-primary text-white">Users</h4>
+        <!-- list content -->
+        <li *ngFor="let user of userList" class="list-group-item d-flex justify-content-between align-items-center">
+          <h6>{{user['name']}}</h6>
+        </li>
+      </ul>
+    </div>
+
+    <!-- list of the latest 5 Datasets -->
+    <div (click)="openDatasets()" class="listcontainer" id="second">
+      <ul class="list-group">
+        <!-- list header -->
+        <h4 class="card-header bg-primary text-white">Datasets</h4>
+        <!-- list content -->
+        <li *ngFor="let dataset of datasetList"
+          class="list-group-item d-flex justify-content-between align-items-center">
+          <h6>{{ dataset['name'] }}</h6>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner></ngx-spinner>
+
+<!-- footer -->
+<div *ngIf="isDataRdy()" class="text-center pb-1">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>

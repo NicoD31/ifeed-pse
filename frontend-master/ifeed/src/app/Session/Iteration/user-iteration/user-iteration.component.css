@@ -1,0 +1,13 @@
+cdk-virtual-scroll-viewport {
+  height: 100px;
+  width : 350px;
+  border: 0.4px solid grey;
+}
+
+.th {
+  text-align: left !important;
+}
+
+canvas {
+  margin-top: 10px;
+}

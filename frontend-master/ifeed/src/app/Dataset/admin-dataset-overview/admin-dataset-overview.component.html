@@ -1,0 +1,98 @@
+<div class="jumbotron">
+  <!-- head of page -->
+  <div class="d-flex justify-content-between align-items-center" style="margin:20px;">
+    <h2>Datasets</h2>
+  </div>
+
+  <!-- separator -->
+  <hr class="my-1">
+  
+  <cdk-virtual-scroll-viewport *ngIf="isDataRdy()" id="notClickable" itemSize="50" class="listcontainer" style="height: 368px; width: 98%; margin: 20px;">
+    <!-- list header -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+      <h4>Datasets</h4>
+      (Click on dataset for more information)
+      <div style="width: 15%;">
+        <input #myInput maxlength="30" placeholder="Searche for dataset ..." (input)="filterDatasetList(myInput.value)" class="form-control" style="width: 100%;">
+      </div>
+    </div>
+
+    <!-- list content -->
+    <ul class="list-group">
+      <li *cdkVirtualFor="let dataset of getDisplayList()" class="list-group-item d-flex justify-content-between align-items-center">
+        <!-- name -->
+        <h5 (click)="alertDescription(dataset['id'])" id="clickable" style="width: 300px;">{{dataset['name']}}</h5>
+
+        <div class="d-flex justify-content-between align-items-center" style="width: 700px;">
+          <button (click)="deleteDataset(dataset['id'])" class="btn btn-outline-primary">delete dataset</button>
+
+          <input type="file" id="groundtruthFile" id="clickable" (change)="groundtruthChange($event.target.files)" accept=".json, .csv">
+  
+          <button (click)="importGroundTruth(dataset['id'])" class="btn btn-outline-primary">import selected groundtruth</button>
+        </div>
+      </li>
+    </ul>
+  </cdk-virtual-scroll-viewport>
+
+  <div class="row justify-content-center">
+    <div *ngIf="getMessage()" class="alert alert-danger text-center" style="width: 370px;">
+      <strong>{{getMessage()}}</strong>
+    </div>
+    <div *ngIf="getSuccessMessage()" class="alert alert-success text-center" style="width: 370px;">
+      <strong>{{getSuccessMessage()}}</strong>
+    </div>
+  </div>
+
+<div class="listcontainer" style="width: 98%;height: 20%;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+        <h4>Upload a new dataset</h4>
+    </div>
+
+  <ul class="list-group">
+      <div class="d-flex justify-content-between align-items-center" style="width: 470px;">
+          <label class="col-form-label col-form-label-lg">Dataset:</label> 
+          <input type="file" (change)="datasetChange($event.target.files)" accept=".json, .csv" class="custom-file-upload" style="width: 70%;">
+      </div>
+
+    <form [formGroup]="getDatasetForm()">
+
+        <div>
+          <label class="col-form-label col-form-label-lg">Name:</label>
+          <input maxlength="30" placeholder="Dataset name ..." formControlName="name" class="form-control form-control-lg">
+        </div>
+
+        <div>
+          <label class="col-form-label col-form-label-lg">Description:</label>
+          <textarea maxlength="2000" placeholder="Description ..." formControlName="description" class="form-control form-control-lg"></textarea>
+        </div>
+        <div class="d-flex justify-content-between align-items-center" style="width: 322px;">
+          <label class="col-form-label col-form-label-lg">DatasetType:</label>
+            <mat-form-field>
+              <mat-select formControlName="type" placeholder="Select Datasettype">
+                <mat-option *ngFor="let type of getTypeList()" [value]="type.id">{{type['name']}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf="getDatasetForm().controls.type.value" class="d-flex justify-content-between align-items-center" style="width: 470px;">
+          <label class="col-form-label col-form-label-lg">RawData:</label> 
+          <input type="file" (change)="rawDataChange($event.target.files)" accept=".json, .csv" class="custom-file-upload" style="width: 70%;">
+        </div>
+        
+    </form>
+    <div>
+        <button (click)="uploadDataset()"class="btn btn-primary">upload dataset</button>
+    </div>
+  </ul>
+</div>
+</div>
+
+<ngx-spinner></ngx-spinner>
+  
+<!-- footer -->
+<div class="text-center pb-1">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>
+
+<router-outlet></router-outlet>

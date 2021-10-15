@@ -1,0 +1,21 @@
+td {
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+table {
+  border      : 1px solid black;
+  table-layout: fixed;
+  width       : 100%;
+  height      : 30px;
+}
+
+#plotJson {
+  position    : fixed;
+  z-index     : 5;
+  top         : 0;
+  left        : 25%;
+  display     : block;
+  margin-left : auto;
+  margin-right: auto;
+}

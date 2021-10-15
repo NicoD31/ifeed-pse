@@ -1,0 +1,69 @@
+<ngx-spinner></ngx-spinner>
+<div class="jumbotron">
+  <div *ngIf="isDataRdy()">
+    <div class="d-flex justify-content-between align-items-center" style="margin: 20px;">
+      <h2>Session Detail: {{getName()}}</h2>
+      <div *ngIf="isAdmin()" id="second">
+        <button (click)="deleteSession()" class="btn btn-primary">delete</button>
+      </div>
+    </div>
+
+    <!-- separator -->
+    <hr class="my-1">
+
+    <ul class="list-group" style="width: 98%; margin: 20px;">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center" style="width: 270px;">
+          <small>{{getStatus()}}</small>
+          <div style="width: 200px;">
+            <ngb-progressbar type="success" [value]="this.createPercentFinishedInfo(getSession())" [striped]="true"
+              [animated]="true" height="20px"><i>{{ this.createPercentFinishedInfo(getSession()) }}%</i></ngb-progressbar>
+          </div>
+        </div>
+      </li>
+      <li *ngIf="isNotFinished()" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>Current iteration: {{getCurrentIteration()}}</div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>Total time: {{this.calcService.getTimeAsString(getTotalTime())}}</div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>Average time per iteration: {{this.calcService.getTimeAsString(getAverageTime())}}</div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>Pauses taken: {{getPauses()}}</div>
+      </li>
+      <li *ngIf="isStarted()" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <app-progressbar [heatmaps]="getSession().heatmaps" [matches]="getSession().userlabelMatchesAPI" [mode]="getSetup().historyMode"></app-progressbar>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="isDataRdy() && !isNotFinished()" class="d-flex justify-content-between align-items-center" style="margin: 20px;">
+
+    <div *ngIf="getGroundTruthLabel() && getGroundTruthLabel().length !== 0">
+      <button (click)="makeGroundtruthPlot()" class="btn btn-primary">compare to grondtruth</button>
+      <div id="Groundtruth"></div>
+    </div>
+
+    <div>
+      <button (click)="loadOcal()" class="btn btn-primary">compare to ocal-label</button>
+      <div *ngIf="getOcalLoading()">This may take a while</div>
+      <div id="Ocal"></div>
+    </div>
+
+    <div>
+      {{ getMessage() }}
+    </div>
+
+  </div>
+</div>
+
+<ngx-spinner></ngx-spinner>
+
+<!-- footer -->
+<div class="text-center pb-1" *ngIf="isDataRdy()">
+  <p>Interaktives Feedbacksystem zur Datenanalyse</p>
+  <p>© 2019 License: MIT License</p>
+</div>
